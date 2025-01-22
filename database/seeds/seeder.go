@@ -3,16 +3,15 @@ package seeds
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/lambda-platform/lambda/DB"
+	krudModels "github.com/lambda-platform/lambda/krud/models"
+	puzzleModels "github.com/lambda-platform/lambda/models"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
-
-	"github.com/lambda-platform/lambda/DB"
-	krudModels "github.com/lambda-platform/lambda/krud/models"
-	puzzleModels "github.com/lambda-platform/lambda/models"
 )
 
 // Seed initializes the database with data from vb_schemas.json
@@ -33,25 +32,22 @@ func Seed() {
 	err = SeedVBSchemas(vbSchemas)
 	if err != nil {
 		log.Fatalf("Failed to seed data: %v", err)
-	}
 
+	}
 	SeedLookupTables()
 	fmt.Println("Seed data successfully loaded and updated into the database.")
 
 }
 
-// LoadVBSchemas loads the vb_schemas.json file and unmarshals it into a slice of VBSchema
 func LoadVBSchemas(filePath string) ([]puzzleModels.VBSchema, error) {
 	var vbSchemas []puzzleModels.VBSchema
 
-	// Open the JSON file
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file %s: %w", filePath, err)
 	}
 	defer file.Close()
 
-	// Parse the JSON data
 	jsonParser := json.NewDecoder(file)
 	err = jsonParser.Decode(&vbSchemas)
 	if err != nil {
@@ -61,7 +57,6 @@ func LoadVBSchemas(filePath string) ([]puzzleModels.VBSchema, error) {
 	return vbSchemas, nil
 }
 
-// SeedVBSchemas inserts or updates vb_schemas and creates/updates related Krud records
 func SeedVBSchemas(vbSchemas []puzzleModels.VBSchema) error {
 	legendFormID := 0
 	for _, vb := range vbSchemas {
@@ -116,8 +111,6 @@ func SeedVBSchemas(vbSchemas []puzzleModels.VBSchema) error {
 	}
 	return nil
 }
-
-// AbsolutePath returns the absolute path to the current file's directory
 func AbsolutePath() string {
 	_, fileName, _, _ := runtime.Caller(0)
 	return filepath.Dir(fileName) + "/"

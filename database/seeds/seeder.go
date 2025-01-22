@@ -56,7 +56,6 @@ func LoadVBSchemas(filePath string) ([]puzzleModels.VBSchema, error) {
 
 	return vbSchemas, nil
 }
-
 func SeedVBSchemas(vbSchemas []puzzleModels.VBSchema) error {
 	legendFormID := 0
 	for _, vb := range vbSchemas {
